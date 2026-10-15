@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flemish Flashcards</title>
+<meta name="description" content="Learn Flemish (Dutch as spoken in Belgium) with flashcards: picture cards for beginners, A2 and B1 vocabulary, real Flemish expressions, a pronunciation guide and quizzes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@600&display=swap" rel="stylesheet">
+<style>
+/* Flemish theme: black and Flemish yellow. "--blue" is the main accent colour (name kept from the Greek site). */
+:root{
+  --bg:#f5f2ea; --surface:#fff; --text:#1d1d1b; --muted:#66625a; --line:#e3ddcf;
+  --blue:#1d1d1b; --blue-soft:#fff2b3; --on-blue:#fff; --accent:#f2c500;
+  --green:#1d8a5b; --green-soft:#e3f4ec;
+  --orange:#c46a12; --orange-soft:#fbeedd; --red:#c23b3b; --red-soft:#fbe5e5;
+  --yellow:#e0b400; --yellow-soft:#fff6cc;
+  --card-edge:#d8d0b8; --card-frame:#ebe4cf; --card-back:#fffbea;
+  --shadow:0 12px 28px rgba(40,34,10,.12), 0 2px 6px rgba(40,34,10,.06);
+  --glow:radial-gradient(1200px 500px at 15% -10%, #fff1b8 0, transparent 60%);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121210; --surface:#1d1c19; --text:#f1eee6; --muted:#aaa392; --line:#33302a;
+    --blue:#ffd43b; --blue-soft:#3a3212; --on-blue:#151410; --accent:#ffd43b;
+    --green:#4cc38a; --green-soft:#183326;
+    --orange:#f0a050; --orange-soft:#3a2a18; --red:#ff7b7b; --red-soft:#3a1d1d;
+    --yellow:#ffd43b; --yellow-soft:#35300f;
+    --card-edge:#47412f; --card-frame:#38332a; --card-back:#23211b;
+    --shadow:0 10px 30px rgba(0,0,0,.4);
+    --glow:radial-gradient(1200px 500px at 15% -10%, #2a2610 0, transparent 60%);
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--glow), var(--bg);color:var(--text);font-family:"Noto Sans",system-ui,sans-serif;min-height:100vh}
+button{font:inherit;cursor:pointer;color:inherit}
+a{color:var(--blue)}
+.wrap{max-width:780px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;cursor:pointer;border:0;background:none;padding:0}
+.logo .badge{width:38px;height:38px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-size:22px;box-shadow:0 3px 10px rgba(120,95,0,.35)}
+nav{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface);box-shadow:0 2px 8px rgba(40,34,10,.06)}
+nav button{border:0;background:none;padding:7px 13px;color:var(--muted);font-weight:600;font-size:14px}
+nav button.on{background:var(--blue);color:var(--on-blue)}
+h1{font-family:"Noto Serif",serif;font-size:30px;letter-spacing:-.3px;margin:0 0 6px}
+h2{font-size:20px;margin:28px 0 12px}
+.sub{color:var(--muted);margin:0 0 22px}
+.tagline{font-family:"Noto Serif",serif;color:var(--yellow);font-size:17px;margin:0 0 4px;font-weight:600}
+.grid{display:grid;gap:14px}
+.level{display:flex;align-items:center;gap:16px;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 2px 8px rgba(40,34,10,.05);transition:transform .15s, box-shadow .15s}
+.level:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.level.acc-blue{border-left:6px solid var(--blue)}
+.level.acc-orange{border-left:6px solid var(--orange)}
+.level.feature{border:2px solid var(--yellow);border-left-width:6px;background:linear-gradient(90deg,var(--yellow-soft),var(--surface) 60%)}
+.ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:26px;flex:none}
+.green{background:var(--green-soft)} .blue{background:var(--blue-soft)} .orange{background:var(--orange-soft)} .yellow{background:var(--yellow-soft)}
+.level h3{margin:0 0 2px;font-size:18px}
+.level p{margin:0;color:var(--muted);font-size:14px}
+.cefr{display:inline-block;font-size:12px;font-weight:700;color:var(--text);background:var(--blue-soft);border-radius:6px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+.pct{font-weight:700;color:var(--muted);font-size:14px;white-space:nowrap}
+.bar{height:7px;background:var(--line);border-radius:6px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#3fb984);border-radius:6px;transition:width .3s}
+.extras{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media (max-width:520px){.extras{grid-template-columns:1fr}}
+/* home: the three levels as cards side by side (stacked on phones) */
+.tiles{display:grid;gap:14px}
+@media (min-width:700px){.tiles{grid-template-columns:repeat(3,1fr)}}
+.level.tile{flex-direction:column;align-items:stretch;gap:6px;padding:14px 16px 16px;border-top-width:6px}
+.level.tile.top-green{border-top-color:var(--green)}
+.level.tile.top-blue{border-top-color:var(--blue)}
+.level.tile.top-orange{border-top-color:var(--orange)}
+.tile-top{display:flex;justify-content:space-between;align-items:center}
+.tile .ic{width:44px;height:44px;font-size:23px}
+.tile p{flex:1;line-height:1.4}
+.flag{width:30px;height:20px;border-radius:3px;display:inline-block;vertical-align:-2px;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+@media (min-width:700px){
+  header{margin-bottom:16px}
+  .gables{margin-bottom:18px}
+  .sub{margin-bottom:16px}
+  .level.tile{padding:12px 16px 14px;gap:4px}
+  .tile .ic{width:38px;height:38px;font-size:20px}
+  .tile p{font-size:13px}
+  .level.feature{padding:14px 18px}
+  .extras .level{padding:12px 18px}
+  .extras .ic{width:44px;height:44px;font-size:22px}
+}
+/* a row of Flemish stepped gables (like the Graslei in Ghent) */
+.gables{height:14px;margin:-8px 0 24px;background:var(--blue);opacity:.35;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='14'%3E%3Cpath d='M1 14V8H3V6H5V4H7V2H11V4H13V6H15V8H17V14Z'/%3E%3C/svg%3E") repeat-x left bottom/18px 14px;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='14'%3E%3Cpath d='M1 14V8H3V6H5V4H7V2H11V4H13V6H15V8H17V14Z'/%3E%3C/svg%3E") repeat-x left bottom/18px 14px}
+footer .gables{margin:0 0 16px}
+.back{border:0;background:none;color:var(--blue);font-weight:600;padding:0;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:14px;transition:border-color .12s}
+.chip:hover{border-color:var(--blue)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.count{color:var(--muted);font-size:14px}
+.tbtn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;font-size:13px}
+.deckbar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:-4px 0 18px}
+.deckbar i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),#f5d64a);border-radius:6px;transition:width .3s}
+/* the flashcard: border, coloured top edge, dashed inner frame, stack of cards behind */
+.scene{perspective:1200px;position:relative;z-index:0;margin:6px 6px 26px}
+.scene.s2::before,.scene.s3::before,.scene.s3::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:20px;background:var(--surface);border:2px solid var(--card-edge);box-shadow:0 4px 12px rgba(40,34,10,.08)}
+.scene.s2::before,.scene.s3::before{transform:translate(7px,9px) rotate(1.8deg)}
+.scene.s3::after{transform:translate(-6px,7px) rotate(-1.4deg)}
+.card{position:relative;z-index:1;height:340px;transform-style:preserve-3d;transition:transform .5s;cursor:pointer}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border:2px solid var(--card-edge);border-top:8px solid var(--blue);border-radius:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:safe center;padding:58px 28px 54px;text-align:center;overflow-y:auto}
+.face::after{content:"";position:absolute;inset:8px 10px 10px;border:1.5px dashed var(--card-frame);border-radius:12px;pointer-events:none}
+.face.b{transform:rotateY(180deg);border-top-color:var(--yellow);background:var(--card-back)}
+/* the side facing away must not catch clicks (otherwise its hidden buttons sit over the visible ones) */
+.card.flip .face:not(.b), .card:not(.flip) .face.b{pointer-events:none}
+.card:hover .face:not(.b){border-color:var(--blue);border-top-color:var(--blue)}
+.pic{font-size:clamp(70px,20vw,110px);line-height:1.1;margin-bottom:8px}
+.pic.num{font-family:"Noto Serif",serif;font-weight:600;color:var(--text)}
+.word{font-family:"Noto Serif",serif;font-size:clamp(28px,7.5vw,44px);line-height:1.2;word-break:break-word;color:var(--text)}
+.translit{color:var(--muted);margin-top:8px;font-style:italic;font-size:15px}
+.meaning{font-size:clamp(22px,6vw,32px);font-weight:700}
+.tag{position:absolute;top:18px;left:20px;font-size:12px;font-weight:700;color:var(--text);background:var(--blue-soft);padding:3px 11px;border-radius:999px}
+.face.b .tag{background:var(--yellow-soft)}
+.speak{position:absolute;top:14px;right:16px;border:2px solid var(--card-edge);background:var(--surface);color:var(--text);width:42px;height:42px;border-radius:50%;font-size:18px}
+.hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:600;color:var(--text);background:var(--blue-soft);padding:4px 12px;border-radius:999px}
+.hint::before{content:"↻ "}
+/* Not yet / Got it buttons */
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.act{display:flex;flex-direction:column;align-items:center;gap:2px;border:2px solid transparent;border-radius:16px;padding:12px 10px;transition:transform .12s, box-shadow .12s}
+.act:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(40,34,10,.10)}
+.act.again{background:var(--orange-soft);color:var(--orange);border-color:var(--orange)}
+.act.know{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+.act-main{font-size:17px;font-weight:700}
+.act-sub{font-size:12px;font-weight:500;opacity:.85}
+.panel{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:36px 20px}
+.big{font-size:52px}
+.primary{border:0;background:var(--blue);color:var(--on-blue);border-radius:12px;padding:12px 18px;font-weight:700;box-shadow:0 4px 12px rgba(40,34,10,.25)}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.keys{color:var(--muted);font-size:12px;text-align:center;margin-top:14px}
+.info{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 18px;margin-bottom:18px;font-size:14px;line-height:1.55}
+/* sounds */
+.sounds{display:grid;gap:10px}
+.sound{display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--yellow);border-radius:14px;padding:12px 14px}
+.sound .gl{font-family:"Noto Serif",serif;font-size:26px;font-weight:600;text-align:center}
+.sound p{margin:0;line-height:1.45}
+.sound .ex{font-size:17px;margin-top:4px}
+.sound .ex b{font-family:"Noto Serif",serif}
+@media (max-width:520px){.sound{grid-template-columns:70px 1fr auto;gap:10px}.sound .gl{font-size:21px}}
+/* quiz */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opts.one{grid-template-columns:1fr}
+@media (max-width:520px){.opts{grid-template-columns:1fr}}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:14px 16px;font-size:17px;font-weight:600;text-align:center;min-height:58px;transition:border-color .12s, transform .12s}
+.opt:not(:disabled):hover{border-color:var(--blue);transform:translateY(-1px)}
+.opt.nl{font-family:"Noto Serif",serif;font-size:19px}
+.opt.right{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.opt:disabled{cursor:default}
+.qcard{background:var(--surface);border:2px solid var(--card-edge);border-top:8px solid var(--blue);border-radius:20px;box-shadow:var(--shadow);padding:44px 20px 26px;text-align:center;margin-bottom:16px;position:relative}
+.progress{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.progress i{display:block;height:100%;background:var(--yellow);transition:width .3s}
+.pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:8px}
+.pick button{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:14px;text-align:left}
+.pick button.on{border-color:var(--blue);background:var(--blue-soft)}
+.pick b{display:block}
+.pick span{color:var(--muted);font-size:13px}
+.feedback{margin:0 0 8px;width:100%;text-align:center;line-height:1.5}
+.missed{text-align:left;margin-top:18px}
+.missed li{margin:8px 0;line-height:1.45}
+.note{background:var(--orange-soft);color:var(--orange);border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:14px}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:36px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button class="logo" data-go="home"><span class="badge">🦁</span><span>Flemish Flashcards</span></button>
+    <nav>
+      <button data-go="home">Cards</button>
+      <button data-go="sounds">Sounds</button>
+      <button data-go="quiz">Quiz</button>
+    </nav>
+  </header>
+  <div class="gables" aria-hidden="true"></div>
+  <main id="app"></main>
+  <footer><div class="gables" aria-hidden="true"></div>Your progress is saved in this browser. Audio uses your device's Dutch voice (a Belgian one if your device has it).<br>
+    Standard Dutch as used in Flanders, with the everyday Flemish words people really use.<br>
+    Visits are counted with GoatCounter: no cookies, nothing that identifies you.</footer>
+</div>
+
+<!-- Visitor counting with GoatCounter (same account as digstraightthrough.github.io): no cookies, no personal data;
+     our own copy of their script. Only the page path is sent, never the part after "?". -->
+<script>window.goatcounter = { path: function () { return location.pathname || "/"; } };</script>
+<script data-goatcounter="https://digstraightthrough.goatcounter.com/count" async src="vendor/goatcounter/count.js"></script>
+<script src="data.js"></script>
+<script>
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let known = new Set(store.get("known", []));
+let reverse = store.get("reverse", false);
+let best = store.get("best", {});
+let state = {view:"home"};
+
+const app = document.getElementById("app");
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+const isEmoji = p => p && !/^\d+$/.test(p);
+const picHtml = p => !p ? "" : `<div class="pic ${isEmoji(p)?"":"num"}" aria-hidden="true">${esc(p)}</div>`;
+const noteHtml = t => t ? `<div class="translit">${esc(t)}</div>` : "";
+const saveKnown = () => store.set("known", [...known]);
+// Windows cannot show flag emojis, so the Belgian flag is drawn
+const BE_FLAG = `<svg class="flag" viewBox="0 0 3 2" aria-label="Belgian flag"><rect width="1" height="2" fill="#000"/><rect x="1" width="1" height="2" fill="#FDDA24"/><rect x="2" width="1" height="2" fill="#EF3340"/></svg>`;
+
+// ---------- data ----------
+const levelById = id => LEVELS.find(l => l.id===id);
+const toCard = (lv, cat) => c => ({id:lv.id+":"+c[1], pic:c[0], g:c[1], t:c[2], en:c[3], cat:cat.id, level:lv.id});
+const cardsOf = (lvId, catId="all") => {
+  const lv = levelById(lvId);
+  return lv.cats.filter(c => catId==="all" || c.id===catId).flatMap(cat => cat.cards.map(toCard(lv,cat)));
+};
+
+// ---------- speech ----------
+let dutchVoice = null;
+function loadVoices(){
+  if(!("speechSynthesis" in window)) return;
+  const voices = speechSynthesis.getVoices();
+  dutchVoice = voices.find(v => /^nl[-_]BE/i.test(v.lang)) || voices.find(v => /^nl/i.test(v.lang)) || null;
+}
+if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+// shown only when the device has voices but none of them is Dutch (then 🔊 would read with a foreign voice)
+const voiceNote = () => ("speechSynthesis" in window && speechSynthesis.getVoices().length && !dutchVoice)
+  ? `<div class="note">This device has no Dutch voice, so 🔊 may sound wrong. In Chrome it usually works. On Windows you can add one: Settings → Time &amp; language → Speech → Add voices → Dutch (Belgium) or Dutch (Netherlands).</div>` : "";
+function speak(text){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  // say only the first form ("de vriend / de vriendin" -> "de vriend"); "·" is read as a short pause
+  const u = new SpeechSynthesisUtterance(String(text).split(/\s[\/(]/)[0].replace(/[…]/g,"").replace(/·/g,","));
+  u.lang = dutchVoice ? dutchVoice.lang : "nl-BE"; u.rate = .85;
+  if(dutchVoice) u.voice = dutchVoice;
+  speechSynthesis.speak(u);
+}
+
+// ---------- navigation ----------
+// Anonymous action counts in GoatCounter: only fixed names starting with "fl-" (Flemish Flashcards),
+// so they stay apart from the other sites' events. Does nothing if the counter isn't loaded.
+function track(name){
+  try { if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:"fl-"+name, title:"Flemish Flashcards: "+name, event:true}); }
+  catch(e){ /* counting must never break the site */ }
+}
+function go(view){
+  track("section-"+view);
+  if("speechSynthesis" in window) speechSynthesis.cancel();
+  ({home:renderHome, sounds:renderSounds, quiz:renderQuizSetup})[view]();
+  window.scrollTo(0,0);
+}
+function setNav(view){
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.go===view));
+}
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+
+// ---------- home ----------
+function levelProgress(lv){
+  const all = cardsOf(lv.id), k = all.filter(c => known.has(c.id)).length;
+  return {k, n: all.length, pct: Math.round(k/all.length*100)};
+}
+function renderHome(){
+  state = {view:"home"}; setNav("home");
+  const flem = LEVELS.find(l => l.feature), fp = levelProgress(flem);
+  app.innerHTML = `<p class="tagline" lang="nl-BE">Ik leer Nederlands</p><h1>Learn Flemish, one card at a time</h1>
+    <p class="sub">Pick a level, flip the card, mark what you know. Cards you miss come back again.</p>
+    <div class="tiles">` + LEVELS.filter(l => !l.feature).map(lv => {
+      const p = levelProgress(lv);
+      return `<button class="level tile top-${lv.tint}" data-lv="${lv.id}">
+        <span class="tile-top"><span class="ic ${lv.tint}">${lv.icon}</span><span class="pct">${p.k}/${p.n}</span></span>
+        <h3>${lv.name}<span class="cefr">${lv.cefr}</span></h3><p>${lv.blurb}</p>
+        <div class="bar"><i style="width:${p.pct}%"></i></div></button>`;
+    }).join("") + `</div>
+    <div class="grid" style="margin-top:14px">
+      <button class="level feature" data-lv="${flem.id}">
+        <span class="ic yellow">${flem.icon}</span>
+        <span style="flex:1"><h3>${flem.name} <span class="cefr">${BE_FLAG}</span></h3><p>${flem.blurb}</p><div class="bar"><i style="width:${fp.pct}%"></i></div></span>
+        <span class="pct">${fp.k}/${fp.n}</span></button>
+    </div>
+    <div class="extras">
+      <button class="level acc-blue" data-go2="sounds"><span class="ic blue">🗣️</span><span><h3>Sounds</h3><p>The Dutch sounds that are hard for English speakers</p></span></button>
+      <button class="level acc-orange" data-go2="quiz"><span class="ic orange">🏆</span><span><h3>Quiz</h3><p>Test yourself in 10 questions</p></span></button>
+    </div>
+    <div class="row"><button class="tbtn" id="reset">Reset all progress</button></div>`;
+  app.querySelectorAll("[data-lv]").forEach(b => b.onclick = () => { track("level-"+b.dataset.lv); openDeck(b.dataset.lv); });
+  app.querySelectorAll("[data-go2]").forEach(b => b.onclick = () => go(b.dataset.go2));
+  $("#reset").onclick = () => { if(confirm("Reset all progress and quiz scores?")){ known.clear(); best={}; saveKnown(); store.set("best",{}); renderHome(); } };
+}
+
+// ---------- flashcards ----------
+function cardKeys(e){
+  if(!state.queue || !state.queue[0]) return;
+  if(e.code==="Space"){ e.preventDefault(); flip(); }
+  else if(e.key==="ArrowLeft") again();
+  else if(e.key==="ArrowRight") know();
+}
+function flip(){
+  state.flipped = !state.flipped;
+  $("#card")?.classList.toggle("flip", state.flipped);
+  if(state.flipped && reverse) speak(state.queue[0].g);
+}
+// "Not yet": the card comes back after at least 4 cards you have not seen yet, and never more than one
+// repeated card sits between two new ones, so at least every second card is new even if you press
+// "Not yet" every time. When no new cards are left, missed cards take turns at the back of the deck.
+function again(){
+  const c = state.queue.shift(); if(!c) return;
+  const seen = state.seen || (state.seen = new Set());
+  seen.add(c.id);
+  const q = state.queue, isNew = x => !seen.has(x.id);
+  let pos = q.length, fresh = 0;
+  for(let i = 0; i < q.length; i++){
+    if(!isNew(q[i])) continue;
+    // after the 4th new card, take the first gap between two new cards that has no repeated card yet
+    if(++fresh >= 4 && (i+1 >= q.length || isNew(q[i+1]))){ pos = i + 1; break; }
+  }
+  q.splice(pos, 0, c);
+  state.flipped = false; renderDeck();
+}
+function know(){
+  const c = state.queue.shift(); if(!c) return;
+  known.add(c.id); saveKnown();
+  state.flipped = false; renderDeck();
+}
+const deckButtons = `<div class="actions">
+    <button class="act again" id="again"><span class="act-main">↺ Not yet</span><span class="act-sub">Show it again soon</span></button>
+    <button class="act know" id="know"><span class="act-main">✓ Got it</span><span class="act-sub">Remove it from the deck</span></button></div>
+  <div class="keys">Keyboard: Space = flip · ← not yet · → got it</div>`;
+// stack of cards behind the top card, so it looks like a deck
+const stackClass = () => state.queue.length > 2 ? "s3" : state.queue.length > 1 ? "s2" : "";
+const deckBar = total => `<div class="deckbar"><i style="width:${Math.round((total-state.queue.length)/total*100)}%"></i></div>`;
+
+function openDeck(lvId, catId="all"){
+  state = {view:"deck", level:lvId, cat:catId, flipped:false,
+    queue: shuffle(cardsOf(lvId,catId).filter(c => !known.has(c.id)))};
+  renderDeck();
+}
+function renderDeck(){
+  setNav("home");
+  const lv = levelById(state.level), c = state.queue[0];
+  const total = cardsOf(lv.id, state.cat).length;
+  const chips = [{id:"all",name:"All",icon:""}, ...lv.cats].map(cat =>
+    `<button class="chip ${cat.id===state.cat?"on":""}" data-c="${cat.id}">${cat.icon} ${cat.name}</button>`).join("");
+  let body;
+  if(!c){
+    body = `<div class="panel"><div class="big">🎉</div><h2>Goed zo!</h2><p class="sub">Well done: you know every card in this set.</p>
+      <div class="row"><button class="primary" id="quizMe">Take a quiz</button><button class="tbtn" id="restart">Practise again</button></div></div>`;
+  } else {
+    const dutch = `<div class="word" lang="nl-BE">${esc(c.g)}</div>${noteHtml(c.t)}`;
+    const eng = `<div class="meaning">${esc(c.en)}</div>`;
+    const front = picHtml(c.pic) + (reverse ? eng : dutch);
+    const back = reverse ? picHtml(c.pic) + dutch : eng + `<div class="translit" lang="nl-BE">${esc(c.g)}</div>${noteHtml(c.t)}`;
+    body = `<div class="scene ${stackClass()}"><div class="card ${state.flipped?"flip":""}" id="card">
+        <div class="face"><span class="tag">${lv.name}</span>${reverse?"":`<button class="speak" data-say aria-label="Listen">🔊</button>`}${front}<span class="hint">Tap to flip</span></div>
+        <div class="face b"><span class="tag">${lv.name}</span><button class="speak" data-say aria-label="Listen">🔊</button>${back}</div>
+      </div></div>${deckButtons}`;
+  }
+  app.innerHTML = `<button class="back" id="back">← All levels</button>
+    <h1>${lv.icon} ${lv.name}<span class="cefr">${lv.feature ? BE_FLAG : lv.cefr}</span></h1>
+    <div class="chips">${chips}</div>
+    <div class="tools"><span class="count">${state.queue.length} of ${total} cards left</span>
+      <span><button class="tbtn" id="dir">⇄ ${reverse?"English → Dutch":"Dutch → English"}</button> <button class="tbtn" id="shuf">🔀 Shuffle</button></span></div>
+    ${deckBar(total)}${c ? voiceNote() : ""}${body}`;
+  $("#back").onclick = renderHome;
+  app.querySelectorAll(".chip").forEach(b => b.onclick = () => openDeck(lv.id, b.dataset.c));
+  $("#dir").onclick = () => { reverse = !reverse; store.set("reverse",reverse); state.flipped=false; renderDeck(); };
+  $("#shuf").onclick = () => { shuffle(state.queue); state.flipped=false; renderDeck(); };
+  if(!c){
+    $("#restart").onclick = () => { cardsOf(lv.id,state.cat).forEach(x => known.delete(x.id)); saveKnown(); openDeck(lv.id,state.cat); };
+    $("#quizMe").onclick = () => startQuiz(lv.id, "g2e");
+    return;
+  }
+  $("#card").onclick = e => { if(!e.target.closest("[data-say]")) flip(); };
+  app.querySelectorAll("[data-say]").forEach(b => b.onclick = e => { e.stopPropagation(); speak(c.g); });
+  $("#again").onclick = again;
+  $("#know").onclick = know;
+}
+
+// ---------- sounds ----------
+function renderSounds(){
+  state = {view:"sounds"}; setNav("sounds");
+  app.innerHTML = `<h1>Dutch sounds</h1>
+    <p class="sub">Most Dutch letters sound as you would expect. These are the ones that surprise English speakers. Tap 🔊 to hear the example.</p>
+    ${voiceNote()}
+    <div class="sounds">` + SOUNDS.map((s,i) =>
+      `<div class="sound"><div class="gl" lang="nl-BE">${esc(s[0])}</div>
+        <div><p>${esc(s[1])}</p><p class="ex">${s[4]} <b lang="nl-BE">${esc(s[2])}</b> = ${esc(s[3])}</p></div>
+        <button class="speak" style="position:static" data-i="${i}" aria-label="Listen to ${esc(s[2])}">🔊</button></div>`).join("") + `</div>
+    <div class="info" style="margin-top:18px">Flemish tip: in Flanders the <b>g</b> is softer than in the Netherlands, and many people say <b lang="nl-BE">ge</b> or <b lang="nl-BE">gij</b> instead of <b lang="nl-BE">je</b> or <b lang="nl-BE">jij</b>. See the <a href="#" id="toFlem">Echt Vlaams</a> cards.</div>`;
+  app.querySelectorAll("[data-i]").forEach(b => b.onclick = () => speak(SOUNDS[+b.dataset.i][2]));
+  $("#toFlem").onclick = e => { e.preventDefault(); track("level-flemish"); openDeck("flemish"); window.scrollTo(0,0); };
+}
+
+// ---------- quiz ----------
+const QUIZ_SOURCES = LEVELS.map(l => ({id:l.id, name:`${l.icon} ${l.name}`, tag:l.feature ? "Flemish" : l.cefr}));
+const QUIZ_TYPES = [
+  {id:"g2e", name:"Dutch → English", desc:"See the Dutch, pick the meaning"},
+  {id:"e2g", name:"English → Dutch", desc:"See the meaning, pick the Dutch"},
+  {id:"listen", name:"🔊 Listening", desc:"Hear the word, pick the meaning"}
+];
+let quizPick = store.get("quizPick", {src:"beginner", type:"g2e"});
+if(!QUIZ_SOURCES.find(s => s.id===quizPick.src) || !QUIZ_TYPES.find(t => t.id===quizPick.type)) quizPick = {src:"beginner", type:"g2e"};
+const bestKey = (src, type) => src + "/" + type;
+
+function renderQuizSetup(){
+  state = {view:"quizSetup"}; setNav("quiz");
+  const bestText = s => { const b = best[bestKey(s.id, quizPick.type)]; return b!=null ? `Best: ${b}/10` : "Not tried yet"; };
+  app.innerHTML = `<h1>Quiz</h1><p class="sub">10 questions. Pick what to practise.</p>
+    <h2>What?</h2><div class="pick" id="src">` + QUIZ_SOURCES.map(s =>
+      `<button data-v="${s.id}" class="${s.id===quizPick.src?"on":""}"><b>${s.name}</b><span>${s.tag} · ${bestText(s)}</span></button>`).join("") + `</div>
+    <h2>How?</h2><div class="pick" id="type">` + QUIZ_TYPES.map(t =>
+      `<button data-v="${t.id}" class="${t.id===quizPick.type?"on":""}"><b>${t.name}</b><span>${t.desc}</span></button>`).join("") + `</div>
+    <div class="row"><button class="primary" id="start">Start quiz</button></div>`;
+  app.querySelectorAll("#src button").forEach(b => b.onclick = () => { quizPick.src=b.dataset.v; store.set("quizPick",quizPick); renderQuizSetup(); });
+  app.querySelectorAll("#type button").forEach(b => b.onclick = () => { quizPick.type=b.dataset.v; store.set("quizPick",quizPick); renderQuizSetup(); });
+  $("#start").onclick = () => { track("quiz-"+quizPick.src); startQuiz(quizPick.src, quizPick.type); };
+}
+function quizQuestions(src, type){
+  const pool = cardsOf(src);
+  return shuffle([...pool]).slice(0,10).map(ans => {
+    // wrong options: prefer the same category so the choices are not too easy
+    const same = shuffle(pool.filter(p => p.id!==ans.id && p.cat===ans.cat && p.en!==ans.en));
+    const rest = shuffle(pool.filter(p => p.id!==ans.id && p.cat!==ans.cat && p.en!==ans.en));
+    const wrong = [];
+    for(const p of [...same, ...rest]){ if(wrong.length===3) break; if(!wrong.some(w => w.en===p.en || w.g===p.g)) wrong.push(p); }
+    let prompt;
+    if(type==="g2e") prompt = picHtml(ans.pic) + `<div class="word" lang="nl-BE">${esc(ans.g)}</div>`;
+    else if(type==="e2g") prompt = picHtml(ans.pic) + `<div class="meaning">${esc(ans.en)}</div>`;
+    else prompt = `<button class="primary" id="play" style="font-size:22px;padding:18px 28px">🔊 Play</button><p class="sub" style="margin:12px 0 0">Listen and pick the meaning</p>`;
+    const line = `${ans.pic&&isEmoji(ans.pic)?ans.pic+" ":""}<span lang="nl-BE"><b>${esc(ans.g)}</b></span> = ${esc(ans.en)}`;
+    return {
+      prompt, say: ans.g, autoplay: type==="listen", speakAfter: type!=="listen", speakBtn: type==="g2e",
+      dutchChoices: type==="e2g",
+      choices: shuffle([ans, ...wrong]).map(o => ({label: type==="e2g" ? o.g : o.en, ok: o.id===ans.id})),
+      feedback: line, missed: line
+    };
+  });
+}
+function startQuiz(src, type){
+  quizPick = {src, type}; store.set("quizPick", quizPick);
+  state = {view:"quiz", src, type, qs: quizQuestions(src, type), i:0, score:0, answered:false, missed:[]};
+  renderQuestion();
+}
+function renderQuestion(){
+  setNav("quiz");
+  const {qs, i} = state, q = qs[i];
+  const long = q.choices.some(c => c.label.length > 34);
+  app.innerHTML = `<button class="back" id="quit">← Quit quiz</button>
+    ${q.autoplay && !dutchVoice ? `<div class="note">No Dutch voice was found on this device, so the listening quiz may sound wrong. Try Dutch → English instead.</div>` : ""}
+    <div class="tools"><span class="count">Question ${i+1} of ${qs.length}</span><span class="count">Score: ${state.score}</span></div>
+    <div class="progress"><i style="width:${i/qs.length*100}%"></i></div>
+    <div class="qcard">${q.speakBtn ? `<button class="speak" id="sayQ" aria-label="Listen">🔊</button>` : ""}${q.prompt}</div>
+    <div class="opts ${long?"one":""}">` + q.choices.map((c,k) =>
+      `<button class="opt ${q.dutchChoices?"nl":""}" data-k="${k}" ${q.dutchChoices?'lang="nl-BE"':""}>${esc(c.label)}</button>`).join("") + `</div>
+    <div class="row" id="nextRow"></div>`;
+  $("#quit").onclick = renderQuizSetup;
+  $("#play")?.addEventListener("click", () => speak(q.say));
+  $("#sayQ")?.addEventListener("click", () => speak(q.say));
+  if(q.autoplay) setTimeout(() => speak(q.say), 250);
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => answer(+b.dataset.k));
+}
+function answer(k){
+  if(state.answered) return;
+  state.answered = true;
+  const q = state.qs[state.i], ok = q.choices[k].ok;
+  if(ok) state.score++; else state.missed.push(q.missed);
+  app.querySelectorAll(".opt").forEach((b,j) => {
+    b.disabled = true;
+    if(q.choices[j].ok) b.classList.add("right");
+    else if(j===k) b.classList.add("wrong");
+  });
+  if(q.speakAfter) speak(q.say);
+  const last = state.i===state.qs.length-1;
+  $("#nextRow").innerHTML = `<p class="feedback"><b>${ok?"✓ Correct!":"✗ Not quite"}</b> — ${q.feedback}</p>
+    <button class="primary" id="next">${last?"See results":"Next →"}</button>`;
+  $("#next").onclick = next;
+  $("#next").focus();
+}
+function next(){
+  state.answered = false;
+  if(++state.i < state.qs.length) return renderQuestion();
+  const key = bestKey(state.src, state.type), n = state.qs.length, s = state.score;
+  const isBest = best[key]==null || s > best[key];
+  if(isBest){ best[key] = s; store.set("best", best); }
+  const emoji = s===n ? "🏆" : s>=n*.7 ? "🎉" : s>=n*.4 ? "👍" : "💪";
+  app.innerHTML = `<div class="panel"><div class="big">${emoji}</div><h2>${s} / ${n}</h2>
+    <p class="sub">${isBest?"New best score!":`Your best: ${best[key]}/${n}`}</p>
+    ${state.missed.length ? `<div class="missed"><b>To practise:</b><ul>` + state.missed.map(m => `<li>${m}</li>`).join("") + `</ul></div>` : ""}
+    <div class="row"><button class="primary" id="again">Try again</button><button class="tbtn" id="other">Other quiz</button></div></div>`;
+  $("#again").onclick = () => startQuiz(state.src, state.type);
+  $("#other").onclick = renderQuizSetup;
+}
+
+// ---------- keyboard ----------
+document.addEventListener("keydown", e => {
+  if(state.view==="deck") cardKeys(e);
+  else if(state.view==="quiz" && !state.answered){
+    const n = +e.key;
+    if(n>=1 && n<=state.qs[state.i].choices.length) answer(n-1);
+  }
+});
+
+renderHome();
+</script>
+</body>
+</html>
